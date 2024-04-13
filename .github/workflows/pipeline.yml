@@ -8,9 +8,7 @@ on:
 
 jobs:
   build_test:
-
     runs-on: ubuntu-latest
-
     steps:
     - name: Checkout the repository
       uses: actions/checkout@v4
@@ -26,8 +24,20 @@ jobs:
     - name: Display softuni username
       run: echo 'dimitarv23'
 
+  deploy:
+    needs: build-test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to production
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.MY_RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.MY_RENDER_API_KEY }}
+      - name: Wait for deploy
+        run: sleep 60
+
   run-ui-tests:
-    needs: build_test
+    needs: deploy
     runs-on: ubuntu-latest
     steps:
     - name: Checkout the repository
@@ -41,7 +51,5 @@ jobs:
       run: npm install
     - name: Install playwright
       run: npx playwright install
-    - name: Start the application
-      run: npm run start &
     - name: Run the UI tests
       run: npm run test:ui
