@@ -25,7 +25,7 @@ jobs:
       run: echo 'dimitarv23'
 
   deploy:
-    needs: build-test
+    needs: build_test
     runs-on: ubuntu-latest
     steps:
       - name: Deploy to production
